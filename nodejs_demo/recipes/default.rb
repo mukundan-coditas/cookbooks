@@ -1,5 +1,6 @@
 app = search(:aws_opsworks_app).first
-app_path = "/srv/#{app['shortname']}"
+app_path = "/srv/#{app['shortname']}/basixsService"
+git_path = "/srv/#{app['shortname']}"
 
 package "git" do
   # workaround for:
@@ -14,13 +15,13 @@ application app_path do
   environment.update("PORT" => "80")
   environment.update(app["environment"])
 
-  git app_path do
+  git git_path do
     repository app["app_source"]["url"]
     revision app["app_source"]["revision"]
   end
 
-  link "#{app_path}/app_state['PATH']/server.js" do
-    to "#{app_path}/app_state['PATH']/index.js"
+  link "#{app_path}/server.js" do
+    to "#{app_path}/index.js"
   end
 
   npm_install
